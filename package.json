@@ -1,0 +1,16 @@
+
+{
+  "name": "designlint",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Design system auditing plugin for Figma",
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "latest",
+    "esbuild": "latest",
+    "typescript": "latest"
+  }
+}

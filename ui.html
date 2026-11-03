@@ -1,0 +1,551 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #101114;
+      color: #f5f5f5;
+      font-family: Inter, Arial, sans-serif;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 750;
+      letter-spacing: -0.8px;
+    }
+
+    .version {
+      font-size: 10px;
+      color: #c4b5fd;
+      background: #292333;
+      padding: 5px 9px;
+      border-radius: 20px;
+    }
+
+    .subtitle {
+      color: #a1a1aa;
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+
+    .button {
+      width: 100%;
+      padding: 13px;
+      background: #a78bfa;
+      color: #171322;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 18px;
+      font-size: 13px;
+    }
+
+    .button:hover {
+      background: #b69dfc;
+    }
+
+    .button:disabled {
+      opacity: 0.5;
+      cursor: wait;
+    }
+
+    .stats,
+    .component-grid,
+    .spacing-grid,
+    .typography-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .stat,
+    .card,
+    .issue {
+      background: #1c1d22;
+      border: 1px solid #303139;
+      border-radius: 10px;
+      padding: 13px;
+    }
+
+    .stat small,
+    .card small {
+      color: #a1a1aa;
+      font-size: 11px;
+    }
+
+    .number {
+      font-size: 25px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .card-value {
+      font-size: 20px;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      margin: 23px 0 12px;
+      font-weight: 700;
+    }
+
+    #results {
+      display: grid;
+      gap: 9px;
+    }
+
+    .issue {
+      font-size: 12px;
+      line-height: 1.6;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .issue:hover {
+      border-color: #a78bfa;
+    }
+
+    .issue strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .error {
+      color: #fb7185;
+    }
+
+    .warning {
+      color: #fbbf24;
+    }
+
+    .success {
+      color: #4ade80;
+    }
+
+    .issue small {
+      display: block;
+      color: #a1a1aa;
+      margin-top: 5px;
+    }
+
+    .empty {
+      color: #a1a1aa;
+      font-size: 12px;
+      padding: 18px;
+      text-align: center;
+      border: 1px dashed #41414a;
+      border-radius: 10px;
+    }
+
+    #status {
+      color: #a1a1aa;
+      font-size: 11px;
+      line-height: 1.6;
+      margin-top: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .footer {
+      color: #666875;
+      font-size: 10px;
+      text-align: center;
+      margin-top: 24px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">✳ DesignLint</div>
+    <div class="version">BETA 0.5</div>
+  </div>
+
+  <div class="subtitle">
+    Design System Quality Auditor
+  </div>
+
+  <!-- RUN AUDIT -->
+  <button class="button" id="audit">
+    Run Design Audit →
+  </button>
+
+  <!-- MAIN STATISTICS -->
+  <div class="stats">
+
+    <div class="stat">
+      <small>Total Issues</small>
+      <div class="number" id="total">0</div>
+    </div>
+
+    <div class="stat">
+      <small>Scanned Nodes</small>
+      <div class="number" id="scanned">0</div>
+    </div>
+
+  </div>
+
+  <!-- COMPONENT OVERVIEW -->
+  <div class="section-title">
+    Component Overview
+  </div>
+
+  <div class="component-grid">
+
+    <div class="card">
+      <small>Components</small>
+      <div class="card-value" id="components">0</div>
+    </div>
+
+    <div class="card">
+      <small>Component Sets</small>
+      <div class="card-value" id="componentSets">0</div>
+    </div>
+
+    <div class="card">
+      <small>Instances</small>
+      <div class="card-value" id="instances">0</div>
+    </div>
+
+    <div class="card">
+      <small>Broken Instances</small>
+      <div class="card-value" id="broken">0</div>
+    </div>
+
+  </div>
+
+  <!-- SPACING OVERVIEW -->
+  <div class="section-title">
+    Spacing Overview
+  </div>
+
+  <div class="spacing-grid">
+
+    <div class="card">
+      <small>Gap Checks</small>
+      <div class="card-value" id="gapChecks">0</div>
+    </div>
+
+    <div class="card">
+      <small>Padding Checks</small>
+      <div class="card-value" id="paddingChecks">0</div>
+    </div>
+
+  </div>
+
+  <!-- TYPOGRAPHY OVERVIEW -->
+  <div class="section-title">
+    Typography Overview
+  </div>
+
+  <div class="typography-grid">
+
+    <div class="card">
+      <small>Text Layers</small>
+      <div class="card-value" id="textNodes">0</div>
+    </div>
+
+    <div class="card">
+      <small>Font Size Checks</small>
+      <div class="card-value" id="fontSizeChecks">0</div>
+    </div>
+
+    <div class="card">
+      <small>Font Family Checks</small>
+      <div class="card-value" id="fontFamilyChecks">0</div>
+    </div>
+
+    <div class="card">
+      <small>Font Weight Checks</small>
+      <div class="card-value" id="fontWeightChecks">0</div>
+    </div>
+
+    <div class="card">
+      <small>Line Height Checks</small>
+      <div class="card-value" id="lineHeightChecks">0</div>
+    </div>
+
+    <div class="card">
+      <small>Letter Spacing Checks</small>
+      <div class="card-value" id="letterSpacingChecks">0</div>
+    </div>
+
+    <div class="card">
+      <small>Text Style Checks</small>
+      <div class="card-value" id="textStyleChecks">0</div>
+    </div>
+
+  </div>
+
+  <!-- AUDIT FINDINGS -->
+  <div class="section-title">
+    Audit Findings
+  </div>
+
+  <div id="results">
+    <div class="empty">
+      Run your first audit to see results.
+    </div>
+  </div>
+
+  <!-- STATUS -->
+  <div id="status">
+    Ready to scan your design.
+  </div>
+
+  <div class="footer">
+    DESIGNLINT · DESIGN QUALITY CONTROL
+  </div>
+
+  <script>
+
+    const button = document.getElementById("audit");
+
+    const results = document.getElementById("results");
+
+    const status = document.getElementById("status");
+
+    // ======================================
+    // RUN AUDIT
+    // ======================================
+
+    button.addEventListener("click", () => {
+
+      button.disabled = true;
+
+      button.textContent = "Scanning...";
+
+      status.textContent =
+        "Analyzing your Figma page...";
+
+      results.innerHTML =
+        '<div class="empty">Scanning design layers...</div>';
+
+      parent.postMessage({
+        pluginMessage: {
+          type: "RUN_AUDIT"
+        }
+      }, "*");
+
+    });
+
+    // ======================================
+    // RECEIVE FIGMA MESSAGES
+    // ======================================
+
+    window.onmessage = (event) => {
+
+      const message = event.data.pluginMessage;
+
+      if (!message) return;
+
+      // ====================================
+      // ERROR HANDLING
+      // ====================================
+
+      if (message.type === "AUDIT_ERROR") {
+
+        button.disabled = false;
+
+        button.textContent = "Run Design Audit →";
+
+        status.textContent =
+          "Audit failed. Check plugin console.";
+
+        results.innerHTML =
+          '<div class="empty error">Something went wrong.</div>';
+
+        return;
+      }
+
+      if (message.type !== "AUDIT_RESULTS") return;
+
+      // ====================================
+      // RESET BUTTON
+      // ====================================
+
+      button.disabled = false;
+
+      button.textContent = "Run Design Audit →";
+
+      const issues = Array.isArray(message.issues)
+        ? message.issues
+        : [];
+
+      // ====================================
+      // MAIN STATISTICS
+      // ====================================
+
+      document.getElementById("total").textContent =
+        issues.length;
+
+      document.getElementById("scanned").textContent =
+        message.scanned ?? 0;
+
+      // ====================================
+      // COMPONENT STATISTICS
+      // ====================================
+
+      const components = message.componentStats || {};
+
+      document.getElementById("components").textContent =
+        components.components ?? 0;
+
+      document.getElementById("componentSets").textContent =
+        components.componentSets ?? 0;
+
+      document.getElementById("instances").textContent =
+        components.instances ?? 0;
+
+      document.getElementById("broken").textContent =
+        components.brokenInstances ?? 0;
+
+      // ====================================
+      // SPACING STATISTICS
+      // ====================================
+
+      const spacing = message.spacingStats || {};
+
+      document.getElementById("gapChecks").textContent =
+        spacing.gapChecks ?? 0;
+
+      document.getElementById("paddingChecks").textContent =
+        spacing.paddingChecks ?? 0;
+
+      // ====================================
+      // TYPOGRAPHY STATISTICS
+      // ====================================
+
+      const typography = message.typographyStats || {};
+
+      document.getElementById("textNodes").textContent =
+        typography.textNodes ?? 0;
+
+      document.getElementById("fontSizeChecks").textContent =
+        typography.fontSizeChecks ?? 0;
+
+      document.getElementById("fontFamilyChecks").textContent =
+        typography.fontFamilyChecks ?? 0;
+
+      document.getElementById("fontWeightChecks").textContent =
+        typography.fontWeightChecks ?? 0;
+
+      document.getElementById("lineHeightChecks").textContent =
+        typography.lineHeightChecks ?? 0;
+
+      document.getElementById("letterSpacingChecks").textContent =
+        typography.letterSpacingChecks ?? 0;
+
+      document.getElementById("textStyleChecks").textContent =
+        typography.textStyleChecks ?? 0;
+
+      // ====================================
+      // STATUS
+      // ====================================
+
+      status.textContent =
+        `Audit complete · ${issues.length} issues · ` +
+        `${spacing.gapChecks ?? 0} gap checks · ` +
+        `${spacing.paddingChecks ?? 0} padding checks · ` +
+        `${typography.textNodes ?? 0} text layers`;
+
+      // ====================================
+      // CLEAR PREVIOUS FINDINGS
+      // ====================================
+
+      results.innerHTML = "";
+
+      // ====================================
+      // NO ISSUES
+      // ====================================
+
+      if (issues.length === 0) {
+
+        results.innerHTML =
+          '<div class="empty success">✓ No violations found!</div>';
+
+        return;
+      }
+
+      // ====================================
+      // RENDER AUDIT FINDINGS
+      // ====================================
+
+      issues.forEach(issue => {
+
+        const item = document.createElement("div");
+
+        item.className = "issue";
+
+        const title = document.createElement("strong");
+
+        title.className =
+          issue.severity === "error"
+            ? "error"
+            : "warning";
+
+        title.textContent =
+          issue.category || "Design issue";
+
+        const description = document.createElement("div");
+
+        description.textContent =
+          issue.description || "No description available";
+
+        const node = document.createElement("small");
+
+        node.textContent =
+          "Layer: " + (issue.nodeName || "Unknown");
+
+        item.appendChild(title);
+
+        item.appendChild(description);
+
+        item.appendChild(node);
+
+        // CLICK TO LOCATE
+        item.addEventListener("click", () => {
+
+          if (!issue.nodeId) return;
+
+          parent.postMessage({
+            pluginMessage: {
+              type: "SELECT_NODE",
+              nodeId: issue.nodeId
+            }
+          }, "*");
+
+        });
+
+        results.appendChild(item);
+
+      });
+
+    };
+
+  </script>
+
+</body>
+</html>
